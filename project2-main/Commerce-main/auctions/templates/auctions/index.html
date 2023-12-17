@@ -1,0 +1,44 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div style="margin: 10px; padding: 50px;">
+    <h2>{{ heading }}</h2>
+
+    {% if nCat %}
+     <h3>Items in Category: {{ nCat.catName }}</h3>
+    {%  endif %}
+    
+    {% for x in vAuction %}
+    <div style ="border: 2px solid lightskyblue; margin: 10px ; 
+                text-align: center; display: flex; flex-wrap: wrap;" >
+
+        <div style ="padding: 5px; width: 60%;"> 
+            <img src=" {{ x.image }}"  width="50%"> 
+        </div>
+
+        <div style =" width: 30%;">
+            <div>
+                <a href="{% url 'listPage'  x.id  %}">
+                    <h1><b>{{ x.title }}</b></h1>
+                </a>
+            </div>
+            <h6> <span style="color: grey;"> Owner:</span> <b>{{ x.owner }}</b></h6>
+            <h6> <span style="color: grey;"> Price:</span>  ₹ {{ x.startingPrice }} </h6>
+            <p> <span style="color: grey;"> About:</span> {{ x.description }} </p>
+        
+        </div>
+        
+    </div>
+    {% empty %}
+        <div>
+            <h5>Empty! Nothing to show.</h5>
+        </div>
+        
+    {% endfor %}
+
+</div>
+    
+    
+{% endblock %}
+
+<!-- <img src="https://source.unsplash.com/random" alt=" A bike pic"> -->

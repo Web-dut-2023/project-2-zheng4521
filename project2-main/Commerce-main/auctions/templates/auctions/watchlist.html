@@ -1,0 +1,52 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div style="margin: 10px; padding: 50px;">
+    <h2>{{ heading }} of <strong style="background-color: rgb(192, 243, 243);">{{ user.username }}</strong>.</h2>
+    
+    {% for x in vAuction %}
+    <div style ="border: 2px solid lightskyblue; margin: 10px ; text-align: center;
+                display: flex; flex-wrap: wrap;">
+
+        <div style = "padding: 5px; width: 60%;"> 
+            <img src=" {{ x.image }}"  width="50%"> 
+        </div>
+
+        <div style =" width: 30%;">
+            
+                <a href="{% url 'listPage'  x.id  %}">
+                    <h1><b>{{ x.title }}</b></h1>
+                </a>
+                <h6> <span style="color: grey;"> Owner:</span> <b>{{ x.owner }}</b></h6>
+                <h6> <span style="color: grey;"> Price:</span> <b> ₹ {{ x.startingPrice }} </b> </h6>
+                <p>  <span style="color: grey;"> About:</span> {{ x.description }} </p>
+                 
+                
+            <div style="text-align: center; margin: 5px;  padding: 10px;">
+                <form action="{% url 'listPage' x.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-primary"  style="background: red;" name="RemoveWatchlistBtn2" type="submit"  >
+                        Remove from Watchlist
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+    {% empty %}
+        <div style="padding: 50px;">
+            <h5 style="color:crimson;">
+                Your watchlist is Empty! 
+            </h5>
+            <h6>
+                You haven't added any item to your watchlist.
+            </h6>
+        </div>
+        
+    {% endfor %}
+
+</div>
+    
+    
+{% endblock %}
+

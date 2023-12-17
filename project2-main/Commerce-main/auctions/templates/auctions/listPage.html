@@ -1,0 +1,143 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div style="margin: 10px; padding-left: 50px; padding-right: 50px;">
+
+<h3>Detailed List Page of <b style="background-color:lightcyan;">{{ x.title }}</b> </h3>
+<div style ="border: 0.5px solid rgb(240, 225, 196); margin: 10px ;
+             text-align: center; display: flex; flex-wrap: wrap;" >
+
+    <div style ="padding: 5px; width: 70%;">
+        <img src=" {{ x.image }}"  width="80%"> 
+    </div>
+
+    <div style =" width: 30%;">
+        <h1><b>{{ x.title }}</b></h1>
+        <h6> <span style="color: grey;"> Owner:</span> <b>{{ x.owner }}</b></h6>
+        <h6> <span style="color: grey;"> Price:</span> <b> ₹ {{ x.startingPrice }} </b> </h6>
+        <p>  <span style="color: grey;"> Category:</span> {{ x.category.catName }} </p>
+        <p>  <span style="color: grey;"> About:</span> {{ x.description }} </p>
+        
+    </div>   
+</div>
+
+{% if x.sold %} 
+    <div style="margin: 10px; padding: 5px; color: blue; background-color: chartreuse; text-align: center; ">
+        <h5>{{ x.soldTo }} had won the bid at price <b>₹ {{ x.soldAtPrice }}</b></h5>
+    </div>
+    <div style="margin: 10px; padding: 5px; text-align:center; color: crimson;">
+        <b> Bidding is closed for this Product.</b>
+    </div >
+{% else %}
+    <div style="margin: 10px; padding: 50px;">
+
+        {% if message %}
+        <div style="text-align: right; margin: 5px;  padding: 10px; color: blue;">
+            <span >
+                {{ message }}
+            </span>
+        </div>
+        {% endif %}
+        
+        {% if instance %}
+        <div style="text-align: right; margin: 5px;  padding: 10px;">
+            <form action="{% url 'listPage' x.id %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-primary" style="background: red;" name="RemoveWatchlistBtn1" type="submit"  >
+                    Remove from Watchlist
+                </button>
+            </form>
+        </div>
+        {% else %}
+        <div style="text-align: right;">
+            <form action="{% url 'listPage' x.id %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-primary" style="background: green;" name="watchlistBtn" type="submit"  >
+                    Add to Watchlist
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+        <h4> Bidding </h4>
+        {% for i in vBid %}
+            <div style ="border: 0.5px solid rgb(240, 225, 196); margin: 10px ; padding: 5px;">
+                <span style="color:darkgrey;">
+                    <b>{{ i.bidder }} :</b> 
+                </span> 
+                <span>
+                    <b>₹ {{ i.bidPrice }} </b> for this {{ x.title }}
+                </span>
+                <!-- Bidder has bidded on <b>{{ x.title }}</b> at the price of  -->
+            </div>
+        {% endfor %}
+
+    {% if x.owner == request.user %}
+
+        
+        <div style="padding: 5px;">
+            <form action="{% url 'listPage' x.id %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-primary" name="CloseAuctionBtn" type="submit"  >
+                    Close This Auction
+                </button>
+            </form>
+        </div>
+        
+
+    {% else %}
+        
+        <div style="margin: 5px;">
+            <form action="{% url 'listPage' x.id %}" method="post">
+                {% csrf_token %}
+                <div class="form-group" >
+                    <input class="form-control" autofocus min="{{ max_price }}"
+                    type="number" step="0.01" name= "BidPrice" placeholder="Bid your Price..." required style="width: 25%;">
+                </div>
+
+                    <input class="btn btn-primary" type="submit" name="BidBtn" value="Bid" >
+            </form>
+        </div>
+        
+    {% endif %}
+    </div>
+
+{% endif %}
+
+
+<div style="margin: 10px; padding: 50px;">
+   <h4> Comment </h4>
+   {% for c in vCom %}
+        <div style ="border: 0.5px solid rgb(240, 225, 196); margin: 10px ; padding: 5px;" >
+            <span style="color:darkgrey;">
+                {{ c.commenter }} : 
+            </span> 
+            <span>
+                {{ c.commentThought }} 
+            </span>
+        </div>
+    {% endfor %}
+
+    <form action="{% url 'listPage' x.id %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+             <textarea class="form-control" autofocus name="comment" cols="20" rows="5" placeholder="Your Comment..." required ></textarea>
+        </div>
+        <div style="text-align: right;">
+            <input class="btn btn-primary" type="submit" name="CommentBtn" value="Comment">
+        </div>
+
+
+    </form>
+    
+</div>
+
+
+
+    
+
+
+<div>
+
+
+{% endblock %}
